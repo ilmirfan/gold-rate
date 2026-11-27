@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FAFAF8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Gold Rate</title>
+  <meta name="description" content="Real-time gold jewel price calculator with live Sri Lankan market rates.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="application-name" content="Gold Rate">
+  <meta name="apple-mobile-web-app-title" content="Gold Rate">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="calculator-app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <img src="icons/icon-192.png" alt="Gold Rate" class="app-mark-img" width="32" height="32">
+        <h1 class="app-title">Gold Rate</h1>
+      </div>
+
+      <div class="header-actions">
+        <button id="refresh-btn" class="btn-icon" title="Refresh Rates" aria-label="Refresh Rates">
+          <svg class="refresh-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+          </svg>
+        </button>
+        <button id="settings-btn" class="btn-icon" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Unified 2-Column Gold Rates Panel -->
+    <section class="live-rates-panel" aria-label="Today's 8g Gold Rates">
+      <!-- 24KT Column -->
+      <div class="rate-column" data-rate-kt="24">
+        <div class="rate-meta">
+          <span class="rate-purity">24KT</span>
+          <span class="rate-weight-tag">8g</span>
+        </div>
+        <div class="rate-amount-group">
+          <span class="rate-currency">LKR</span>
+          <span id="rate-24k-val" class="rate-value">343,000</span>
+        </div>
+      </div>
+
+      <div class="rate-column-divider" aria-hidden="true"></div>
+
+      <!-- 22KT Column -->
+      <div class="rate-column featured" data-rate-kt="22">
+        <div class="rate-meta">
+          <span class="rate-purity featured">22KT</span>
+          <span class="rate-weight-tag">8g</span>
+        </div>
+        <div class="rate-amount-group">
+          <span class="rate-currency">LKR</span>
+          <span id="rate-22k-val" class="rate-value">315,600</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Form Controls -->
+    <main class="calculator-body">
+      <!-- Weight Input (Primary Interactive Element) -->
+      <section class="form-group weight-group">
+        <div class="group-header">
+          <label for="weight-input" class="group-label">Jewel Weight</label>
+          <!-- Segmented Unit Selector -->
+          <div class="segmented-control unit-selector" role="radiogroup" aria-label="Weight Unit">
+            <button type="button" class="unit-btn active" data-unit="g" role="radio" aria-checked="true">Grams (g)</button>
+            <button type="button" class="unit-btn" data-unit="mg" role="radio" aria-checked="false">Milligrams (mg)</button>
+          </div>
+        </div>
+
+        <div class="input-container weight-input-box">
+          <input
+            type="number"
+            id="weight-input"
+            class="weight-input-field"
+            placeholder="0.00"
+            value="8"
+            step="any"
+            min="0"
+            inputmode="decimal"
+            aria-label="Jewel Weight"
+          >
+          <span class="input-suffix weight-unit-label" id="weight-unit-label">g</span>
+        </div>
+
+        <!-- Equivalent Converted Weight Display -->
+        <div class="conversion-row" id="unit-equiv-bar">
+          <span id="equiv-grams">8.000 g</span>
+          <span class="conversion-dot" aria-hidden="true">•</span>
+          <span id="equiv-mg">8,000 mg</span>
+        </div>
+      </section>
+
+      <!-- Gold Purity Selector (Unified Segmented Control) -->
+      <section class="form-group">
+        <div class="group-header">
+          <span class="group-label">Purity</span>
+        </div>
+        <div class="purity-segmented-control" role="radiogroup" aria-label="Gold Karat Selection">
+          <button type="button" class="karat-card active" data-kt="22" role="radio" aria-checked="true">
+            <span class="purity-text">22KT</span>
+          </button>
+          <button type="button" class="karat-card" data-kt="24" role="radio" aria-checked="false">
+            <span class="purity-text">24KT</span>
+          </button>
+          <button type="button" class="karat-card" data-kt="21" role="radio" aria-checked="false">
+            <span class="purity-text">21KT</span>
+          </button>
+          <button type="button" class="karat-card" data-kt="18" role="radio" aria-checked="false">
+            <span class="purity-text">18KT</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Secondary Inputs Grid (Making Charge & Seller's Price) -->
+      <div class="secondary-inputs-grid">
+        <!-- Making Charges -->
+        <section class="form-group">
+          <div class="group-header">
+            <label for="making-input" class="group-label">Making Charge</label>
+            <div class="segmented-control mode-selector" role="radiogroup" aria-label="Making Charge Type">
+              <button type="button" class="making-type-btn active" data-mode="percent" role="radio" aria-checked="true">%</button>
+              <button type="button" class="making-type-btn" data-mode="amount" role="radio" aria-checked="false">LKR</button>
+            </div>
+          </div>
+          <div class="input-container standard-input-box">
+            <input
+              type="number"
+              id="making-input"
+              class="standard-input-field"
+              placeholder="0"
+              value="0"
+              step="any"
+              min="0"
+              inputmode="decimal"
+              aria-label="Making Charges"
+            >
+            <span class="input-suffix" id="making-unit-tag">%</span>
+          </div>
+        </section>
+
+        <!-- Seller's Quoted Price -->
+        <section class="form-group">
+          <div class="group-header">
+            <label for="seller-price-input" class="group-label">Seller's Price</label>
+          </div>
+          <div class="input-container standard-input-box">
+            <input
+              type="number"
+              id="seller-price-input"
+              class="standard-input-field"
+              placeholder="Optional"
+              step="any"
+              min="0"
+              inputmode="decimal"
+              aria-label="Seller's Price"
+            >
+            <span class="input-suffix static-badge">LKR</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Calculation Result Section (Primary Visual Focus) -->
+      <section class="result-panel" id="total-hero-card">
+        <!-- Main Calculated Amount -->
+        <div class="result-header">
+          <div class="result-title-row">
+            <span class="result-label">Total Jewel Cost</span>
+            <span id="effective-kt-badge" class="result-spec-tag">22KT • 8.00g</span>
+          </div>
+          <div class="result-amount-display">
+            <span class="result-curr">LKR</span>
+            <span id="grand-total-val" class="result-number">315,600.00</span>
+          </div>
+        </div>
+
+        <!-- Seller Premium (Refined Information Row) -->
+        <div id="seller-diff-banner" class="diff-banner" style="display: none;">
+          <div class="diff-left">
+            <span id="diff-title-label" class="diff-label">Seller Premium</span>
+            <span id="diff-pct-badge" class="diff-badge">+0.0%</span>
+          </div>
+          <div class="diff-right">
+            <span class="diff-curr">LKR</span>
+            <span id="diff-amount-val" class="diff-number">0.00</span>
+          </div>
+        </div>
+
+        <!-- Financial Breakdown (Subtle Dividers & Tabular Layout) -->
+        <div class="breakdown-table">
+          <div class="breakdown-row">
+            <span class="breakdown-item-label">Gold Base</span>
+            <span id="base-gold-val" class="breakdown-item-value">LKR 315,600.00</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="breakdown-item-label">Making Charge</span>
+            <span id="making-charge-val" class="breakdown-item-value">+ LKR 0.00</span>
+          </div>
+          <div class="breakdown-rule"></div>
+          <div class="breakdown-row rate-row">
+            <span class="breakdown-item-label">Rate / Gram</span>
+            <span id="effective-rate-gram" class="breakdown-item-value">LKR 39,450.00</span>
+          </div>
+          <div class="breakdown-row rate-row">
+            <span class="breakdown-item-label">Rate / Milligram</span>
+            <span id="effective-rate-mg" class="breakdown-item-value">LKR 39.45</span>
+          </div>
+        </div>
+
+        <!-- Primary & Secondary Actions -->
+        <div class="action-buttons-group">
+          <button type="button" id="copy-summary-btn" class="btn-primary" aria-label="Copy Quote to Clipboard">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            <span id="copy-btn-text">Copy Quote</span>
+          </button>
+          <button type="button" id="reset-btn" class="btn-secondary" title="Reset Inputs" aria-label="Reset Inputs">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            <span>Reset</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p class="footer-text">brainstormed by <a href="https://wa.me/94788758064" target="_blank" rel="noopener noreferrer" class="footer-link">Irfan</a></p>
+    </footer>
+
+    <!-- Settings Dialog -->
+    <dialog id="settings-dialog" aria-labelledby="settings-dialog-title">
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h2 id="settings-dialog-title" class="dialog-title">Settings</h2>
+          <button type="button" id="dialog-close-x" class="btn-icon" aria-label="Close settings">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <form id="settings-form" method="dialog" class="settings-form">
+          <!-- 24K & 22K Source Selection -->
+          <div class="dialog-section">
+            <div class="segmented-control full-width" role="radiogroup" aria-label="Rate Source">
+              <button type="button" class="source-toggle-btn active" data-source="devi" role="radio" aria-checked="true">
+                Fetch from online sources
+              </button>
+              <button type="button" class="source-toggle-btn" data-source="manual" role="radio" aria-checked="false">
+                Manual Rates
+              </button>
+            </div>
+            <div class="dialog-status-hint" id="online-status-hint">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span id="last-updated-text" class="status-time">Fetching live rates...</span>
+            </div>
+          </div>
+
+          <!-- 24KT & 22KT Manual Rates (Active when Manual mode is selected) -->
+          <div class="dialog-section manual-inputs-group" id="manual-inputs-block">
+            <div class="dialog-grid-2">
+              <div class="dialog-field">
+                <label for="manual-24k-input" class="dialog-field-label">24KT / 8g (LKR)</label>
+                <input
+                  type="number"
+                  id="manual-24k-input"
+                  class="dialog-input"
+                  step="any"
+                  min="0"
+                  placeholder="343000"
+                >
+              </div>
+
+              <div class="dialog-field">
+                <label for="manual-22k-input" class="dialog-field-label">22KT / 8g (LKR)</label>
+                <input
+                  type="number"
+                  id="manual-22k-input"
+                  class="dialog-input"
+                  step="any"
+                  min="0"
+                  placeholder="315600"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- 21KT & 18KT Manual Rates (Always Manual) -->
+          <div class="dialog-section">
+            <div class="dialog-grid-2">
+              <div class="dialog-field">
+                <label for="manual-21k-input" class="dialog-field-label">21KT / 8g (LKR)</label>
+                <input
+                  type="number"
+                  id="manual-21k-input"
+                  class="dialog-input"
+                  step="any"
+                  min="0"
+                  placeholder="300125"
+                >
+              </div>
+
+              <div class="dialog-field">
+                <label for="manual-18k-input" class="dialog-field-label">18KT / 8g (LKR)</label>
+                <input
+                  type="number"
+                  id="manual-18k-input"
+                  class="dialog-input"
+                  step="any"
+                  min="0"
+                  placeholder="257250"
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Dialog Actions -->
+          <div class="dialog-actions">
+            <button type="button" id="save-settings-btn" class="btn-primary">Save Changes</button>
+            <button type="button" id="cancel-settings-btn" class="btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Floating Toast Notice -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
